@@ -4,9 +4,11 @@ from typing import Optional
 from jose import jwt
 from pydantic import BaseModel
 
+
 SECRET_KEY = 'my_secret_key'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
+
 
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
@@ -37,4 +39,3 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     login: Optional[str] = None
 
-    
