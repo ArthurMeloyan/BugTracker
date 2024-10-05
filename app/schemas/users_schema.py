@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional
 from app.models.users_model import Role
 
@@ -23,7 +23,10 @@ class UserDelete(BaseModel):
 
 class UserResponse(BaseModel):
     id: int
-
+    username: str
+    login: str
+    password: str
+    role: Role
 
     class Config:
         orm_mode = True
