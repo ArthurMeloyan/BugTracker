@@ -27,7 +27,7 @@ class Priority(str, enum.Enum):
     LOW = 'Low'
 
 
-class User(Base):
+class Task(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
