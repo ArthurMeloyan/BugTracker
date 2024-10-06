@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from app.models.users_model import Role
 
@@ -11,11 +11,8 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    username: Optional[str] = None
     login: Optional[str] = None
-    password: Optional[str] = None
     role: Optional[Role] = None
-
 
 class UserDelete(BaseModel):
     message: str
