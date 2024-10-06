@@ -4,9 +4,9 @@ from app.database import Base
 import enum
 
 class Role(str, enum.Enum):
-    MANAGER = 'Manager'
-    TEAM_LEADER = 'Team Leader'
     DEVELOPER = 'Developer'
+    TEAM_LEADER = 'Team Leader'
+    MANAGER = 'Manager'
     TEST_ENGINEER = 'Test Engineer'
 
 
@@ -17,7 +17,7 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     login = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    role = Column(Enum(Role), default=Role.MANAGER, nullable=False)
+    role = Column(Enum(Role), default=Role.DEVELOPER, nullable=False)
 
     task_created = relationship(
         "Task",
