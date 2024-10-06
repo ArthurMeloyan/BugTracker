@@ -21,7 +21,7 @@ def create_user(db: Session, user: UserCreate):
         username = user.username,
         login = user.login,
         password = hashed_password,
-        role = user.Role
+        role = user.role
     )
     db.add(db_user)
     db.commit()
@@ -39,7 +39,7 @@ def update_user(db: Session, user_id: int, user: UserUpdate):
         db_user.login = user.login
     if user.password:
         db_user.password = hash_password(user.password)
-    if user.role:
+    if user.Role:
         db_user.role = user.role
 
     db.commit()
