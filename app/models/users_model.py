@@ -17,7 +17,7 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     login = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    role = Column(Enum(Role), nullable=False)
+    role = Column(Enum(Role), default=Role.MANAGER, nullable=False)
 
     task_created = relationship(
         "Task",

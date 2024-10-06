@@ -28,7 +28,7 @@ class Priority(str, enum.Enum):
 
 
 class Task(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'tasks'
 
     id = Column(Integer, primary_key=True, index=True)
     type = Column(Enum(Type), nullable=False)
@@ -41,5 +41,5 @@ class Task(Base):
     assignee_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     creator_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
-    creator = relationship('User', foreign_keys='[creator_id]', back_populates='task_created')
-    assignee = relationship('User', foreign_keys='[assignee_id]', back_populates='task_assigned')
+    creator = relationship('User', foreign_keys=[creator_id], back_populates='task_created')
+    assignee = relationship('User', foreign_keys=[assignee_id], back_populates='task_assigned')
