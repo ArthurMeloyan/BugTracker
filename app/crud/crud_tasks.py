@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.tasks_model import Task
-from app.schemas.tasks_schema import TaskCreate, TaskUpdate
-
+from app.schemas.tasks_schema import TaskCreate, TaskUpdate, Status
 
 def get_task(db: Session, task_id: int):
     return db.query(Task).filter(Task.id == task_id).first()
@@ -55,3 +54,27 @@ def delete_task(db: Session, task_id: int):
     db.delete(db_task)
     db.commit()
     return True
+
+
+def update_task_status(db: Session, task_id: int, status: Status):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        return None
+    if status in [Status.TO_DO, Status.WONTFIX]:
+        task.status = status
+    elif task.status == Status.TO_DO and status == Status.IN_PROGRESS:
+        task.status = status
+    elif task.status == Status.IN_PROGRESS and status == Status.CODE_REVIEW:
+        task.status = status
+    elif task.status == Status.CODE_REVIEW and status == Status.DEV_TEST:
+        task.status = status
+    elif task.status == Status.DEV_TEST and status == Status.TESTING:
+        task.status = status
+    elif task.status == Status.TESTING and status == Status.DONE:
+        task.status = status
+    else:
+        return None
+
+    db.commit()
+    db.refresh(task)
+    return task
