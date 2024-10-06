@@ -28,8 +28,9 @@ class UserResponse(BaseModel):
     password: str
     role: Role
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class Token(BaseModel):
@@ -37,6 +38,6 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokeData(BaseModel):
+class TokenData(BaseModel):
     login: Optional[str] = None
 
