@@ -9,13 +9,6 @@ from app.database import get_db
 router = APIRouter()
 
 
-@router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    existing_user = crud_users.get_user_by_login(db, user.login)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="User with login already exists")
-    return crud_users.create_user(db, user)
-
 
 @router.get("/{user_id}", response_model=UserResponse)
 def read_user(user_id: int, db: Session = Depends(get_db)):
