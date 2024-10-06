@@ -5,11 +5,11 @@ from app.models.tasks_model import Type, Priority, Status
 
 class TaskBase(BaseModel):
     type: Type
-    priority: Priority
+    priority: Optional[Priority] = None
     status: Status
     title: str
-    description: str
-    assignee_id: int
+    description: Optional[str] = None
+    assignee_id: Optional[int] = None
     creator_id: int
 
 
