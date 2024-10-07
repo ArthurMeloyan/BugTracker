@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.crud import crud_tasks
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, check_assignment_restrictions
 from app.models.users_model import User
 from app.schemas.tasks_schema import TaskCreate, TaskUpdate, TaskDelete, TaskResponse, Status
 from app.schemas.users_schema import Role
@@ -13,7 +13,9 @@ router = APIRouter()
 
 
 @router.post('/', response_model=TaskResponse)
-def create_task(task: TaskCreate, db: Session = Depends(get_db)):
+def create_task(task: TaskCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if not check_assignment_restrictions(task.status, current_user.role):
+        raise HTTPException(status_code=400, detail="Assignment restrictions violated")
     return crud_tasks.create_task(db=db, task=task)
 
 
@@ -32,14 +34,13 @@ def read_tasks(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
 
 @router.put('/{task_id}', response_model=TaskResponse)
-def update_task(task_id: int, task: TaskUpdate, db: Session = Depends(get_db)):
+def update_task(task_id: int, task: TaskUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     db_task = crud_tasks.get_task(db, task_id=task_id)
-    if db_task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
-    updated_task = crud_tasks.update_task(db, task)
-    if updated_task is None:
-        raise HTTPException(status_code=400, detail="Error occurred while updating task")
-    return updated_task
+    if db_task:
+        if not check_assignment_restrictions(task.status, current_user.role):
+            raise HTTPException(status_code=400, detail="Assignment restrictions violated")
+        return crud_tasks.update_task(db=db, task=task, task_id=task_id)
+    raise HTTPException(status_code=404, detail="Task not found")
 
 
 @router.delete('/{task_id}', response_model=TaskDelete)
