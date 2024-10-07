@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.tasks_model import Task
 from app.schemas.tasks_schema import TaskCreate, TaskUpdate, Status
+from app.models.users_model import User
 
 def get_task(db: Session, task_id: int):
     return db.query(Task).filter(Task.id == task_id).first()
@@ -10,15 +11,12 @@ def get_tasks(db: Session, skip: int = 0, limit: int = 10):
     return db.query(Task).offset(skip).limit(limit).all()
 
 
-def create_task(db: Session, task: TaskCreate):
+def create_task(db: Session, task: TaskCreate, creator: User):
     db_task = Task(
-        type = task.type,
-        priority = task.priority,
-        status = task.status,
-        title = task.title,
-        description = task.description,
-        assignee_id=task.assignee_id,
-        creator_id=task.creator_id
+        title=task.title,
+        description=task.description,
+        status=task.status,
+        creator_id=creator.id
     )
     db.add(db_task)
     db.commit()
@@ -26,10 +24,10 @@ def create_task(db: Session, task: TaskCreate):
     return db_task
 
 
-def update_task(db: Session, task: TaskUpdate):
-    db_task = db.query(Task).filter(Task.id == task.id).first()
+def update_task(db: Session, task: TaskUpdate, task_id: int):
+    db_task = db.query(Task).filter(Task.id == task_id).first()
     if not db_task:
-        return False
+        return None
     if task.type:
         db_task.type = task.type
     if task.priority:

@@ -1,7 +1,18 @@
 from sqlalchemy.orm import Session
 from app.models.users_model import User
-from app.schemas.users_schema import UserCreate
-from app.utils import hash_password
+from app.schemas.users_schema import UserCreate, Role
+
+
+def update_user(db: Session, user_id: int, new_login: str, new_role: Role):
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        return None
+    user.login = new_login
+    user.role = new_role
+    db.commit()
+    db.refresh(user)
+    return user
+
 
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
@@ -9,6 +20,10 @@ def get_user(db: Session, user_id: int):
 
 def get_user_by_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
+
+
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 10):
