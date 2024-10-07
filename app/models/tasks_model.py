@@ -27,6 +27,7 @@ class Priority(str, enum.Enum):
     LOW = 'Low'
 
 
+
 class Task(Base):
     __tablename__ = 'tasks'
 
@@ -38,8 +39,8 @@ class Task(Base):
     description = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    assignee_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    creator_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    assignee_id = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    creator_id = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
 
     creator = relationship('User', foreign_keys=[creator_id], back_populates='task_created')
     assignee = relationship('User', foreign_keys=[assignee_id], back_populates='task_assigned')
