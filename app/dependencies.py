@@ -6,7 +6,8 @@ from app.database import get_db
 from app.schemas.users_schema import TokenData
 from app.utils import SECRET_KEY, ALGORITHM
 from app.crud import crud_users
-
+from app.models.users_model import Role
+from app.models.tasks_model import Status
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
 
@@ -39,3 +40,13 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user
+
+
+def check_assignment_restrictions(task_status: Status, assignee_role: Role) -> bool:
+    if assignee_role == Role.MANAGER:
+        return False
+    elif assignee_role == Role.TEST_ENGINEER and task_status in [Status.IN_PROGRESS, Status.CODE_REVIEW, Status.DEV_TEST]:
+        return False
+    elif assignee_role == Role.DEVELOPER and task_status == Status.TESTING:
+        return False
+    return True
