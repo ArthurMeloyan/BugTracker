@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from app.models.tasks_model import Type, Priority, Status
-
+from datetime import datetime
 
 class TaskBase(BaseModel):
     type: Type
@@ -39,8 +39,8 @@ class TaskDelete(BaseModel):
 
 class TaskResponse(TaskBase):
     id: int
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
     model_config = {
         "from_attributes": True
